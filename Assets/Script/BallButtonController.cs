@@ -16,10 +16,12 @@ public class BallButtonController : MonoBehaviour
 
             //Set animation for this ball;
             anim.SetBool("isSelected", true);
+            //Play selected sound
         }
         else if (BallAttribute.selectedCount == 1){ //des selected
             BallAttribute.selectedCount = 0;
             //Checking condition for moving;
+            // if (BallMatrix.ins)
         }
     }
 }

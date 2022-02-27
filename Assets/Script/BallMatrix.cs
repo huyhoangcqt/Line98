@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class BallMatrix : MonoBehaviour
@@ -7,6 +8,10 @@ public class BallMatrix : MonoBehaviour
     private int ballCount;
     private Matrix9x9<GameObject> balls;
     [SerializeField] private GameObject[] templateBalls;
+    [SerializeField] private GameObject ballPanel;
+    private float ratio;
+
+    private const int BASE_SCREEN_WIDTH = 720;
 
     private void Awake() {
         balls = new Matrix9x9<GameObject>();
@@ -14,17 +19,22 @@ public class BallMatrix : MonoBehaviour
 
         for (int i = 0; i < ballCount; i++){
             int idx = Random.Range(0, templateBalls.Length);
-            GameObject newBall = Instantiate(templateBalls[idx], Vector3.zero, Quaternion.identity);
-            Point pos = new Point(Random.Range(0, 8), Random.Range(0,8));
-            while (balls.GetValue(pos.x, pos.y) != null){
-                pos = new Point(Random.Range(0, 8), Random.Range(0,8));
+            Point posInMatrix = new Point(Random.Range(0, 8), Random.Range(0,8));
+            while (balls.GetValue(posInMatrix.x, posInMatrix.y) != null){
+                posInMatrix = new Point(Random.Range(0, 8), Random.Range(0,8));
             }
-
-            balls.SetValue(pos.x, pos.y, newBall);
-            newBall.GetComponent<BallAttribute>().SetPosition(pos);
-            Vector2 positionInWorldSpace = PositionMatrix.instance.GetValue(pos.x, pos.y);
-            newBall.transform.position = positionInWorldSpace;
+            
+            Vector2 positionInWorldSpace = PositionMatrix.instance.GetValue(posInMatrix.x, posInMatrix.y);
+            Vector3 transformationPos = new Vector3(positionInWorldSpace.x, positionInWorldSpace.y, -1);
+            GameObject newBall = Instantiate(templateBalls[idx], transformationPos, Quaternion.identity, ballPanel.transform);
+            
+            newBall.GetComponent<BallAttribute>().SetPosition(posInMatrix);
+            balls.SetValue(posInMatrix.x, posInMatrix.y, newBall);
         }
+    }
+
+    private void Start(){
+        ratio = (Screen.width / BASE_SCREEN_WIDTH);
     }
 
     public void SetBall(int x, int y, GameObject value){
