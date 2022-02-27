@@ -19,7 +19,7 @@ public class Singleton<T> : MonoBehaviour where T : Component
             return _instance;
         }
     }
-    protected void Awake(){
+    protected virtual void Awake(){
         _instance = this as T;
     }
 }
