@@ -14,9 +14,15 @@ public class BallMatrix : Singleton<BallMatrix>
     private int ballCount;
     private Matrix9x9<GameObject> _balls;
     [SerializeField] private BallProperty[] ballProperties;
-    [SerializeField] private GameObject templateBall, ballCanvas;
+    [SerializeField] private GameObject templateBall, transparentBall, ballCanvas;
+    private const int BASE_SCREEN_WIDTH = 720;
+    private float ratio;
 
     protected override void Awake() {
+        // print("Screen width: " + Screen.width);
+        // print("base screen width: " + BASE_SCREEN_WIDTH);
+        ratio = (float)Screen.width / BASE_SCREEN_WIDTH;
+        // print("Ratio: " + ratio);
         
         base.Awake();
 
@@ -36,11 +42,15 @@ public class BallMatrix : Singleton<BallMatrix>
             Vector3 transformationPos = new Vector3(positionInWorldSpace.x, positionInWorldSpace.y, -1);
             GameObject newBall = Instantiate(templateBall, transformationPos, Quaternion.identity, ballCanvas.transform);
             Vector3 crrPosition = newBall.GetComponent<RectTransform>().localPosition;
-            newBall.GetComponent<RectTransform>().localPosition = new Vector3(crrPosition.x, crrPosition.y, -1);
+            print("Current position: " + crrPosition.ToString());
+            Vector3 newPos = new Vector3(crrPosition.x/ratio, crrPosition.y/ratio, -1);
+            print("new position: " + newPos.ToString());
+            newBall.GetComponent<RectTransform>().localPosition = newPos;
             
             newBall.GetComponent<Image>().sprite = ballProperties[idx].image;
             newBall.GetComponent<BallAttribute>().SetAttribute(ballProperties[idx].ballAttributeSObj);
             // newBall.GetComponent<BallAttribute>().SetPosition(posInMatrix);
+            
 
             SetBall(posInMatrix.x, posInMatrix.y, newBall);
         }
@@ -71,9 +81,8 @@ public class BallMatrix : Singleton<BallMatrix>
 
         Vector2 positionInWorldSpace = PositionMatrix.instance.GetValue(desPos.x, desPos.y);
         Vector3 transformationPos = new Vector3(positionInWorldSpace.x, positionInWorldSpace.y, -1);
-        GameObject newBall = Instantiate(templateBall, transformationPos, Quaternion.identity, ballCanvas.transform);
+        GameObject newBall = Instantiate(transparentBall, transformationPos, Quaternion.identity, ballCanvas.transform);
         Vector3 crrPosition = newBall.GetComponent<RectTransform>().localPosition;
-        newBall.GetComponent<RectTransform>().localPosition = new Vector3(crrPosition.x, crrPosition.y, -1);
         ball.GetComponent<RectTransform>().localPosition = new Vector3(crrPosition.x, crrPosition.y, -1);
         Destroy(newBall);
     }
