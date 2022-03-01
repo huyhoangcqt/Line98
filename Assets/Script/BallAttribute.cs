@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BallAttribute : MonoBehaviour
 {
-    [SerializeField] private BallAttributeScriptableObject ballAttribute;
+    [SerializeField] private BallAttributeScriptableObject _ballAttribute;
     // private Point positionInMatrix;
     public static int selectedCount = 0;
 
@@ -12,7 +12,12 @@ public class BallAttribute : MonoBehaviour
     //     positionInMatrix = pos;
     // }
 
-    public void SetAttribute(BallAttributeScriptableObject value){
-        ballAttribute = value;
+    public BallAttributeScriptableObject ballAttribute{
+        set {
+            _ballAttribute = value;
+        }
+        get {
+            return _ballAttribute;
+        }
     }
 }

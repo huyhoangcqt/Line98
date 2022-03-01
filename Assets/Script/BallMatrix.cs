@@ -42,13 +42,13 @@ public class BallMatrix : Singleton<BallMatrix>
             Vector3 transformationPos = new Vector3(positionInWorldSpace.x, positionInWorldSpace.y, -1);
             GameObject newBall = Instantiate(templateBall, transformationPos, Quaternion.identity, ballCanvas.transform);
             Vector3 crrPosition = newBall.GetComponent<RectTransform>().localPosition;
-            print("Current position: " + crrPosition.ToString());
+            // print("Current position: " + crrPosition.ToString());
             Vector3 newPos = new Vector3(crrPosition.x/ratio, crrPosition.y/ratio, -1);
-            print("new position: " + newPos.ToString());
+            // print("new position: " + newPos.ToString());
             newBall.GetComponent<RectTransform>().localPosition = newPos;
             
             newBall.GetComponent<Image>().sprite = ballProperties[idx].image;
-            newBall.GetComponent<BallAttribute>().SetAttribute(ballProperties[idx].ballAttributeSObj);
+            newBall.GetComponent<BallAttribute>().ballAttribute = ballProperties[idx].ballAttributeSObj;
             // newBall.GetComponent<BallAttribute>().SetPosition(posInMatrix);
             
 
@@ -85,5 +85,52 @@ public class BallMatrix : Singleton<BallMatrix>
         Vector3 crrPosition = newBall.GetComponent<RectTransform>().localPosition;
         ball.GetComponent<RectTransform>().localPosition = new Vector3(crrPosition.x, crrPosition.y, -1);
         Destroy(newBall);
+
+        FindMatchBall(desPos);
+    }
+
+    private BallAttribute originAttribute;
+    private Point up, down, left, right, topleft, downright, topright, downleft;
+    public void FindMatchBall(Point origin){
+        originAttribute = GetBall(origin.x, origin.y).GetComponent<BallAttribute>();
+        print("origin: " + origin.x + ", " + origin.y);
+        up = FindLimitPoint(new Point(-1, 0), origin);
+        // down = FindLimitPoint(new Point(1, 0), origin);
+        // left = FindLimitPoint(new Point(0, -1), origin);
+        // right = FindLimitPoint(new Point(0, 1), origin);
+        // topleft = FindLimitPoint(new Point(-1, -1), origin);
+        // downright = FindLimitPoint(new Point(1, 1), origin);
+        // topright = FindLimitPoint(new Point(1, -1), origin);
+        // downleft = FindLimitPoint(new Point(-1, 1), origin);
+
+        print("Up: " + up.x + ", " + up.y);
+        // print("Down: " + down.x + ", " + down.y);
+    }
+
+    public Point FindLimitPoint(Point direction, Point origin){
+        Point result = new Point(origin);
+        Point point = new Point(origin);
+        do {
+            point.x += direction.x;
+            point.y += direction.y;
+
+            if (point.x < 0 || point.x > 8 || point.y < 0 || point.y > 8){
+                break;
+            }
+
+            GameObject ball = GetBall(point.x, point.y);
+            if (ball == null){
+                print("Null: " + point.x + ", " + point.y);
+                break;
+            }
+            
+            BallAttribute ballAttribute = ball.GetComponent<BallAttribute>();
+            if (ballAttribute.ballAttribute.color != originAttribute.ballAttribute.color)
+                break;
+            if (ballAttribute.ballAttribute.color == originAttribute.ballAttribute.color) 
+                result = point;
+
+        } while(true);
+        return result;
     }
 }

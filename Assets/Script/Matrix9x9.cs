@@ -12,6 +12,11 @@ public class Point{
         y = 0;
     }
 
+    public Point(Point point){
+        x = point.x;
+        y = point.y;
+    }
+
     public Point(int a, int b){
         x = a;
         y = b;
@@ -77,6 +82,9 @@ public class Matrix9x9<T> where T : class
         _value[x,y] = value;
     }
     public T GetValue(int x, int y){
+        if (_value[x,y] == null){
+            Debug.Log("Point(" + x + ", " + y + ") is null");
+        }
         return _value[x,y];
     }
 
