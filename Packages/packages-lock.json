@@ -219,6 +219,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.yellowcat.framework": {
+      "version": "https://github.com/huyhoangcqt/UnityFramework.git?path=Assets/_framework#feature/simple-first",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "25d08fb6e5dc715e565eb0b9bf11b82de1042e79"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
